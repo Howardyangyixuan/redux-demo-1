@@ -33,14 +33,14 @@ const reducer = (state, action) => {
       }
     }
   } else if (type === "updateGroup") {
-      return {
-        ...state,
-        group: {
-          ...state.group,
-          ...payload
-        }
+    return {
+      ...state,
+      group: {
+        ...state.group,
+        ...payload
       }
-    } else {
+    }
+  } else {
     return state
   }
 }
@@ -68,14 +68,15 @@ export const connect = (selector) => (Component) => {
     //每次产生新数据时（包括第一次生成），connect都会记下数据，监听器发布时，数据已经变化，对比store的数据和记录的数据即可，然后connect会重新执行，记下新的数据。
     const data = selector ? selector(state) : state
     useEffect(() => {
-      store.subscribe(() => {
+      //subscribe的返回值是取消该订阅的函数，在下次调用useEffect时执行
+      return store.subscribe(() => {
         //更新订阅中调用的函数，如果依赖的数据变化了，再更新。
         const newData = selector ? selector(store.state) : store.state
         if (hasChanged(data, newData)) {
           update({})
         }
       })
-    }, [])
+    }, [selector])
     const dispatch = (action) => {
       setState(reducer(state, action))
       update({})
