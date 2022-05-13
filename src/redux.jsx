@@ -66,12 +66,12 @@ export const connect = (MapStateToProps, MapDispatchToProps) => (Component) => {
     const {state, setState} = useContext(appContext)
     //每个依赖state的组件订阅数据变动
     //每次产生新数据时（包括第一次生成），connect都会记下数据，监听器发布时，数据已经变化，对比store的数据和记录的数据即可，然后connect会重新执行，记下新的数据。
-    const data = MapStateToProps ? MapStateToProps(state) : state
+    const data = MapStateToProps ? MapStateToProps(state) : {state}
     useEffect(() => {
       //subscribe的返回值是取消该订阅的函数，在下次调用useEffect时执行
       return store.subscribe(() => {
         //更新订阅中调用的函数，如果依赖的数据变化了，再更新。
-        const newData = MapStateToProps ? MapStateToProps(store.state) : store.state
+        const newData = MapStateToProps ? MapStateToProps(store.state) : {state:store.state}
         if (hasChanged(data, newData)) {
           update({})
         }
@@ -81,7 +81,7 @@ export const connect = (MapStateToProps, MapDispatchToProps) => (Component) => {
       setState(reducer(state, action))
       update({})
     }
-    const dispatcher = MapDispatchToProps ? MapDispatchToProps(dispatch) : dispatch
-    return <Component {...props} dispatch={dispatcher} state={data}/>
+    const dispatchers = MapDispatchToProps ? MapDispatchToProps(dispatch) : {dispatch}
+    return <Component {...props} {...dispatchers} {...data}/>
   }
 }
