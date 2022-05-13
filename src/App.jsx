@@ -1,4 +1,4 @@
-import React, {useContext} from "react"
+import React from "react"
 import {appContext, connect, store} from "./redux"
 
 export const App = () => {
@@ -24,22 +24,22 @@ const Child3 = () => {
 }
 const Group = connect((props) => {
   console.log("Group")
-  const {appState} = props
-  return (<div>Group:{appState.group.name}</div>)
+  const {state} = props
+  return (<div>Group:{state.group.name}</div>)
 })
 const User = connect((props) => {
   console.log("User")
-  const {appState} = props
-  return <div>User:{appState.user.name}</div>
+  const {state} = props
+  return <div>User:{state.user.name}</div>
 })
 const UserModifier = connect((props) => {
   console.log("UserModifier")
-  const {dispatch, appState, children} = props
+  const {dispatch, state, children} = props
   const onChange = (e) => {
     dispatch({type: "updateUser", payload: {name: e.target.value}})
   }
   return <div>
-    <input value={appState.user.name}
+    <input value={state.user.name}
            onChange={onChange}/>
     {children}
   </div>

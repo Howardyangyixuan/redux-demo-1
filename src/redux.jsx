@@ -51,6 +51,6 @@ export const connect = (Component) => {
       setState(reducer(state, action))
       update({})
     }
-    return <Component {...props} dispatch={dispatch} appState={state}/>
+    return <Component {...props} dispatch={dispatch} state={state}/>
   }
 }
