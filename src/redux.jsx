@@ -58,7 +58,7 @@ function hasChanged(data, newData) {
 
 //所有用到store数据的组件都应该用connect包裹
 //通过柯里化增加selector细化组件依赖的数据
-export const connect = (selector) => (Component) => {
+export const connect = (MapStateToProps, MapDispatchToProps) => (Component) => {
   //返回一个对Component进行了包装的新函数组件
   return (props) => {
     //使用一个setState，在dispatch变更数据时，进行渲染
@@ -66,21 +66,22 @@ export const connect = (selector) => (Component) => {
     const {state, setState} = useContext(appContext)
     //每个依赖state的组件订阅数据变动
     //每次产生新数据时（包括第一次生成），connect都会记下数据，监听器发布时，数据已经变化，对比store的数据和记录的数据即可，然后connect会重新执行，记下新的数据。
-    const data = selector ? selector(state) : state
+    const data = MapStateToProps ? MapStateToProps(state) : state
     useEffect(() => {
       //subscribe的返回值是取消该订阅的函数，在下次调用useEffect时执行
       return store.subscribe(() => {
         //更新订阅中调用的函数，如果依赖的数据变化了，再更新。
-        const newData = selector ? selector(store.state) : store.state
+        const newData = MapStateToProps ? MapStateToProps(store.state) : store.state
         if (hasChanged(data, newData)) {
           update({})
         }
       })
-    }, [selector])
+    }, [MapStateToProps])
     const dispatch = (action) => {
       setState(reducer(state, action))
       update({})
     }
-    return <Component {...props} dispatch={dispatch} state={data}/>
+    const dispatcher = MapDispatchToProps ? MapDispatchToProps(dispatch) : dispatch
+    return <Component {...props} dispatch={dispatcher} state={data}/>
   }
 }

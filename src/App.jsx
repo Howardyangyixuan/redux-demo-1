@@ -34,16 +34,19 @@ const Group = connect(state => state.group)((props) => {
            onChange={onChange}/>
   </div>)
 })
+const updateUser = (dispatch) => {
+  return (payload) => dispatch({type: "updateUser", payload: payload})
+}
 const User = connect()((props) => {
   console.log("User")
   const {state} = props
   return <div>User:{state.user.name}</div>
 })
-const UserModifier = connect(state => state.user)((props) => {
+const UserModifier = connect(state => state.user, updateUser)((props) => {
   console.log("UserModifier")
-  const {dispatch, state: user, children} = props
+  const {dispatch,state: user, children} = props
   const onChange = (e) => {
-    dispatch({type: "updateUser", payload: {name: e.target.value}})
+    dispatch({name: e.target.value})
   }
   return <div>
     <input value={user.name}
