@@ -3,7 +3,8 @@ import React, {useContext, useEffect, useState} from "react"
 export const appContext = React.createContext(null)
 export const store = {
   state: {
-    user: {name: "howard", age: 23}
+    user: {name: "howard", age: 23},
+    group: {name: "FE"}
   },
   listeners: [],
   subscribe(fn) {

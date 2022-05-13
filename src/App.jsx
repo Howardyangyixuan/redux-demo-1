@@ -20,13 +20,17 @@ const Child2 = () => {
 }
 const Child3 = () => {
   console.log("Child3")
-  return <section>Child3</section>
+  return <section>Child3 <Group/></section>
 }
-
-const User = connect(() => {
+const Group = connect((props) => {
+  console.log("Group")
+  const {appState} = props
+  return (<div>Group:{appState.group.name}</div>)
+})
+const User = connect((props) => {
   console.log("User")
-  const {state} = useContext(appContext)
-  return <div>User:{state.user.name}</div>
+  const {appState} = props
+  return <div>User:{appState.user.name}</div>
 })
 const UserModifier = connect((props) => {
   console.log("UserModifier")
