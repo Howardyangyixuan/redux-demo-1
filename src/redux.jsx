@@ -1,12 +1,15 @@
 import React, {useContext, useEffect, useState} from "react"
 
 export const appContext = React.createContext(null)
+export const createStore = (reducer, initState) => {
+  store.state = initState
+  store.reducer = reducer
+  return store
+}
 export const store = {
-  state: {
-    user: {name: "howard", age: 23},
-    group: {name: "FE"}
-  },
-  listeners: [],
+  state: undefined,
+  reducer: undefined,
+    listeners: [],
   subscribe(fn) {
     store.listeners.push(fn)
     return () => {
@@ -20,28 +23,6 @@ export const store = {
   setState(newValue) {
     store.state = newValue
     store.update()
-  }
-}
-const reducer = (state, action) => {
-  const {type, payload} = action
-  if (type === "updateUser") {
-    return {
-      ...state,
-      user: {
-        ...state.user,
-        ...payload
-      }
-    }
-  } else if (type === "updateGroup") {
-    return {
-      ...state,
-      group: {
-        ...state.group,
-        ...payload
-      }
-    }
-  } else {
-    return state
   }
 }
 
@@ -71,14 +52,14 @@ export const connect = (MapStateToProps, MapDispatchToProps) => (Component) => {
       //subscribe的返回值是取消该订阅的函数，在下次调用useEffect时执行
       return store.subscribe(() => {
         //更新订阅中调用的函数，如果依赖的数据变化了，再更新。
-        const newData = MapStateToProps ? MapStateToProps(store.state) : {state:store.state}
+        const newData = MapStateToProps ? MapStateToProps(store.state) : {state: store.state}
         if (hasChanged(data, newData)) {
           update({})
         }
       })
     }, [MapStateToProps])
     const dispatch = (action) => {
-      setState(reducer(state, action))
+      setState(store.reducer(state, action))
       update({})
     }
     const dispatchers = MapDispatchToProps ? MapDispatchToProps(dispatch) : {dispatch}
