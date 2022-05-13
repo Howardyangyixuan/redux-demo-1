@@ -1,6 +1,15 @@
 import React, {useContext, useEffect, useState} from "react"
 
-export const appContext = React.createContext(null)
+const appContext = React.createContext(null)
+export const Provider = (props) => {
+  const {store, children} = props
+  return (
+    <appContext.Provider value={store}>
+      {children}
+    </appContext.Provider>
+  )
+
+}
 export const createStore = (reducer, initState) => {
   store.state = initState
   store.reducer = reducer
@@ -9,7 +18,7 @@ export const createStore = (reducer, initState) => {
 export const store = {
   state: undefined,
   reducer: undefined,
-    listeners: [],
+  listeners: [],
   subscribe(fn) {
     store.listeners.push(fn)
     return () => {

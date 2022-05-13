@@ -1,5 +1,5 @@
 import React from "react"
-import {appContext, connect, createStore,} from "./redux"
+import {connect, createStore, Provider,} from "./redux"
 
 const initState = {user: {name: "howard", age: 23}, group: {name: "FE"}}
 const reducer = (state, action) => {
@@ -27,11 +27,11 @@ const reducer = (state, action) => {
 const store = createStore(reducer, initState)
 export const App = () => {
   return (
-    <appContext.Provider value={store}>
+    <Provider store={store}>
       <Child1/>
       <Child2/>
       <Child3/>
-    </appContext.Provider>
+    </Provider>
   )
 }
 const Child1 = () => {
